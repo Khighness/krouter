@@ -202,6 +202,7 @@ func (r *Router) Generate(method string, routeName string, params map[string]str
 					return "", ErrGenerateParameters
 				}
 				segments = append(segments, key)
+				continue
 			}
 			return "", ErrPatternGrammar
 		}
