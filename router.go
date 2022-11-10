@@ -327,6 +327,7 @@ func (r *Router) matchAndParse(requestURL string, path string) (matchParams para
 		if string(firstChar) == "{" && string(lastChar) == "}" {
 			matchStr := string(str[1 : strLen-1])
 			list := strings.Split(matchStr, ":")
+			matchName = append(matchName, list[0])
 			pattern = pattern + "/" + "(" + list[1] + ")"
 		} else if string(firstChar) == ":" {
 			matchStr := str
@@ -349,7 +350,7 @@ func (r *Router) matchAndParse(requestURL string, path string) (matchParams para
 	regex := regexp.MustCompile(pattern)
 	if subMatch := regex.FindSubmatch([]byte(requestURL)); subMatch != nil {
 		if string(subMatch[0]) == requestURL {
-			subMatch = subMatch[:1]
+			subMatch = subMatch[1:]
 			for k, v := range subMatch {
 				matchParams[matchName[k]] = string(v)
 			}
