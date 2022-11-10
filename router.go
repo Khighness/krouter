@@ -216,6 +216,13 @@ func (r *Router) Generate(method string, routeName string, params map[string]str
 	return "/" + strings.Join(segments, "/"), nil
 }
 
+// Use appends middleware handler to the middleware stack.
+func (r *Router) Use(middleware ...Middleware) {
+	if len(middleware) > 0 {
+		r.middleware = append(r.middleware, middleware...)
+	}
+}
+
 // NotFoundFunc registers a custom handler when the request route is not found.
 func (r *Router) NotFoundFunc(handler http.HandlerFunc) {
 	r.notFound = handler
@@ -290,6 +297,12 @@ func handle(w http.ResponseWriter, req *http.Request, handler http.HandlerFunc, 
 	}
 
 	baseHandler(w, req)
+}
+
+// Match checks if the request matches the route pattern.
+func (r *Router) Match(requestURL string, path string) bool {
+	_, ok := r.matchAndParse(requestURL, path)
+	return ok
 }
 
 // matchAndParse checks if the request matches the route and returns a map of the parse ones,
